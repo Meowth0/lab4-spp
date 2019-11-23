@@ -84,9 +84,11 @@
     <Compile Include="DataStructures\GeneratedTest.cs" />
     <Compile Include="DataStructures\MethodInfo.cs" />
     <Compile Include="DataStructures\ParsingResultBuilder.cs" />
+    <Compile Include="DataStructures\ParsingResultStructure.cs" />
     <Compile Include="TestGeneratorConfig.cs" />
     <Compile Include="TestsGenerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestTemplateGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -33,11 +33,28 @@ namespace TestsGeneratorLib
             };
             TransformBlock<string, string> readBlock = new TransformBlock<string, string>(fileName => AsyncReader.Read(fileName), readBlockOptions);
             TransformBlock<string, List<GeneratedTest>> processBlock = new TransformBlock<string, List<GeneratedTest>>(sourceCode => GenerateTestClasses(sourceCode), processingOptions);
+            ActionBlock<List<GeneratedTest>> writeBlock = new ActionBlock<List<GeneratedTest>>((generatedClasses => AsyncWriter.Write(destination, generatedClasses)), writeBlockOptions);
 
+            readBlock.LinkTo(processBlock, linkOptions);
+            processBlock.LinkTo(writeBlock, linkOptions);
+
+            foreach (string path in pathes)
+            {
+                await readBlock.SendAsync(path);
+            }
+            readBlock.Complete();
+
+            await writeBlock.Completion;
         }
         private List<GeneratedTest> GenerateTestClasses(string sourceCode)
         {
             ParsingResultBuilder builder = new ParsingResultBuilder();
+            ParsingResultStructure result = builder.GetResult(sourceCode);
+
+            TestTemplateGenerator generator = new TestTemplateGenerator();
+            List<GeneratedTest> generatedTests = generator.GetTestTemplates(result);
+
+            return generatedTests;
         }
     }
 }
